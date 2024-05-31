@@ -88,7 +88,7 @@ public class MainService {
                 question.setAnswer(answer);
                 repository.save(question);
 
-                return new ResponseDTO(200, result);
+                return new ResponseDTO(200, question);
             } catch (IOException e) {
                 return new ResponseDTO(400,e.getMessage());
             }
