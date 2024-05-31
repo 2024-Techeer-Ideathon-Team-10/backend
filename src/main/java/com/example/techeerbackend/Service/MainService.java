@@ -30,8 +30,9 @@ public class MainService {
             String apiKey = System.getenv("OPENAI_API_KEY");
             JSONObject messageContent = new JSONObject();
         messageContent.put("type", "text");
-        messageContent.put("text", "해당 문제를 해당문제를\n 1. 문제 해설 \n2. 풀이 과정 \n 3. 정답 도출\n 과정으로 분리하고 \n초등학생도 이해할 수 있게 해설과 풀이를 적어서 단계별로 설명한 결과를 완벽한 json 형식으로 출력해줘 json 필드의 이름은 각각 문제해설, 풀이과정, 정답도출로 하고 문제가 여러개인 경우 각각 하위필드의 필드 모두를 번호로만 해줘");
-            //JSONObject juseokContent = new JSONObject();
+//        messageContent.put("text", "해당 문제를 해당문제를\n 1. 문제 해설 \n2. 풀이 과정 \n 3. 정답 도출\n 과정으로 분리하고 \n초등학생도 이해할 수 있게 해설과 풀이를 적어서 단계별로 설명한 결과를 완벽한 json 형식으로 출력해줘 json 필드의 이름은 각각 문제해설, 풀이과정, 정답도출로 하고 문제가 여러개인 경우 각각 하위필드의 필드 모두를 번호로만 해줘");
+        messageContent.put("text", "해당문제를\n 1. problemExplanation \n2. solutionProcess \n 3. answer\n 과정으로 분리하고 \n초등학생도 이해할 수 있게 해설과 풀이를 적어서 단계별로 설명한 결과를 완벽한 json 형식으로 출력해줘 json 형태는 { 'problemExplanation': [], 'solutionProcess': [], 'answer': []}로 만들어줘 배열안엔 값만 들어가야해 객체를 넣지마");
+        //JSONObject juseokContent = new JSONObject();
             //  juseokContent.put("type","text");
             //    juseokContent.put("text","추가로 각 영어문장을 한국어로 해석한 번역내용을 각 문장 하단에 주석을 달아서 json으로 출력해줘");
             JSONObject imageContent = new JSONObject();
@@ -86,18 +87,18 @@ public class MainService {
                 String result = new JSONObject(r).toString();
                 //String answer = new JSONObject(r).getJSONObject("정답도출").toString();
                 String answer = "";
-                for (Iterator it = new JSONObject(r).getJSONObject("정답도출").keys(); it.hasNext(); ) {
-                    String n = (String) it.next();
-                    String str = new JSONObject(r).getJSONObject("정답도출").get(n).toString();
-                    answer += str+"\n";
-                }
+//                for (Iterator it = new JSONObject(r).getJSONObject("answer").keys(); it.hasNext(); ) {
+//                    String n = (String) it.next();
+//                    String str = new JSONObject(r).getJSONObject("answer").get(n).toString();
+//                    answer += str+"\n";
+//                }
                 Question question = new Question();
                 question.setBase64Image(base64);
                 question.setSolution(result);
                 question.setAnswer(answer);
                 repository.save(question);
 
-                return new ResponseDTO(200, result);
+                return new ResponseDTO(200, r);
             } catch (IOException e) {
                 return new ResponseDTO(400,e.getMessage());
             }
