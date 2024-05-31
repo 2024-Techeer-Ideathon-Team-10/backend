@@ -18,7 +18,7 @@ public class MainService {
             String apiKey = System.getenv("OPENAI_API_KEY");
             JSONObject messageContent = new JSONObject();
             messageContent.put("type", "text");
-            messageContent.put("text", "해당 문제를 초등학생도 이해할 수 있게 해설과 풀이를 적어서 단계별로 설명해줘");
+            messageContent.put("text", "해당 문제를 해당문제를\n 1. 문제 해설 \n2. 풀이 과정 \n 3. 정답 도출\n 과정으로 분리하고 \n초등학생도 이해할 수 있게 해설과 풀이를 적어서 단계별로 설명해줘");
             JSONObject juseokContent = new JSONObject();
             juseokContent.put("type","text");
             juseokContent.put("text","추가로 각 영어문장을 한국어로 해석한 번역내용을 각 문장 하단에 주석을 달아줘");
