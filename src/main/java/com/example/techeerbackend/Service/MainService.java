@@ -17,11 +17,11 @@ public class MainService {
             OkHttpClient client = builder.build();
             String apiKey = System.getenv("OPENAI_API_KEY");
             JSONObject messageContent = new JSONObject();
-            messageContent.put("type", "text");
-            messageContent.put("text", "해당 문제를 해당문제를\n 1. 문제 해설 \n2. 풀이 과정 \n 3. 정답 도출\n 과정으로 분리하고 \n초등학생도 이해할 수 있게 해설과 풀이를 적어서 단계별로 설명해줘");
-            JSONObject juseokContent = new JSONObject();
-            juseokContent.put("type","text");
-            juseokContent.put("text","추가로 각 영어문장을 한국어로 해석한 번역내용을 각 문장 하단에 주석을 달아줘");
+        messageContent.put("type", "text");
+        messageContent.put("text", "해당 문제를 해당문제를\n 1. 문제 해설 \n2. 풀이 과정 \n 3. 정답 도출\n 과정으로 분리하고 \n초등학생도 이해할 수 있게 해설과 풀이를 적어서 단계별로 설명한 결과를 완벽한 json 형식으로 출력해줘 json 필드의 이름은 각각 문제해설, 풀이과정, 정답도출로 하고 문제가 여러개인 경우 각각 하위필드의 필드 모두를 번호로만 해줘");
+            //JSONObject juseokContent = new JSONObject();
+            //  juseokContent.put("type","text");
+            //    juseokContent.put("text","추가로 각 영어문장을 한국어로 해석한 번역내용을 각 문장 하단에 주석을 달아서 json으로 출력해줘");
             JSONObject imageContent = new JSONObject();
             imageContent.put("type", "image_url");
             JSONObject imageUrl = new JSONObject();
@@ -32,14 +32,14 @@ public class MainService {
             JSONArray userMessageArray = new JSONArray();
             userMessageArray.put(imageContent);
             userMessageArray.put(messageContent);
-            userMessageArray.put(juseokContent);
+            //userMessageArray.put(juseokContent);
             userMessage.put("content", userMessageArray);
             JSONArray array = new JSONArray();
             array.put(userMessage);
             JSONObject requestBody = new JSONObject();
             requestBody.put("model", "gpt-4o");
             requestBody.put("messages", array);
-            requestBody.put("max_tokens", 1000);
+            requestBody.put("max_tokens", 1200);
 
             RequestBody body = RequestBody.create(
                     MediaType.parse("application/json; charset=utf-8"),
@@ -54,8 +54,13 @@ public class MainService {
                     .build();
 
             try (Response response = client.newCall(request).execute()) {
-                if (!response.isSuccessful()) return new ResponseDTO(200,response);
-                return new ResponseDTO(200,response.body().string());
+                if (!response.isSuccessful()) return new ResponseDTO(400,response);
+                JSONObject obj =new JSONObject(response.body().string());
+                String r = obj.getJSONArray("choices").getJSONObject(0).getJSONObject("message").getString("content");
+                //
+                r = r.replace("`","");
+                r = r.replace("json","");
+                return new ResponseDTO(200,new JSONObject(r).toString());
             } catch (IOException e) {
                 return new ResponseDTO(400,e.getMessage());
             }
