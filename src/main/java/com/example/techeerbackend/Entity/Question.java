@@ -14,7 +14,8 @@ public class Question {
     @Column(columnDefinition = "LONGTEXT")
     private String base64Image;
 
-    @Column
+    @Lob
+    @Column(columnDefinition = "LONGTEXT")
     private String answer;
 
     @Lob
