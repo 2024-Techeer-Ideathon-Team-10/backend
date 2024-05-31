@@ -1,20 +1,35 @@
 package com.example.techeerbackend.Entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+import lombok.Getter;
 
 @Entity
+@Getter
 public class Question {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column
-    private String imgUrl;
+    @Lob
+    @Column(columnDefinition = "LONGTEXT")
+    private String base64Image;
 
     @Column
     private String answer;
 
-    @Column
+    @Lob
+    @Column(columnDefinition = "LONGTEXT")
     private String solution;
+
+    public void setBase64Image(String base64Image) {
+        this.base64Image = base64Image;
+    }
+
+    public void setAnswer(String answer) {
+        this.answer = answer;
+    }
+
+    public void setSolution(String solution) {
+        this.solution = solution;
+    }
 }

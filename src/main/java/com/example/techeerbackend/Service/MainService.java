@@ -1,16 +1,27 @@
 package com.example.techeerbackend.Service;
 
 import com.example.techeerbackend.DTO.ResponseDTO;
+import com.example.techeerbackend.Entity.Question;
+import com.example.techeerbackend.Repository.MainRepository;
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import okhttp3.*;
 import org.json.JSONObject;
 import java.io.IOException;
 import java.time.Duration;
+import java.util.List;
 
 @Service
 public class MainService {
+    @Autowired
+    MainRepository repository;
+
+    public List<Question> getAllQuestions() {
+        return repository.findAll();
+    }
+
     public ResponseDTO RequestChatGpt(String base64) throws JSONException {
             OkHttpClient.Builder builder = new OkHttpClient.Builder();
             builder.readTimeout(Duration.ofSeconds(60));
@@ -60,7 +71,16 @@ public class MainService {
                 //
                 r = r.replace("`","");
                 r = r.replace("json","");
-                return new ResponseDTO(200,new JSONObject(r).toString());
+
+                assert response.body() != null;
+                String result = new JSONObject(r).toString();
+
+                Question question = new Question();
+                question.setBase64Image(base64);
+                question.setSolution(result);
+                repository.save(question);
+
+                return new ResponseDTO(200, result);
             } catch (IOException e) {
                 return new ResponseDTO(400,e.getMessage());
             }
