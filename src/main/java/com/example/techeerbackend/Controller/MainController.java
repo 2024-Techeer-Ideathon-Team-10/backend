@@ -28,6 +28,7 @@ public class MainController {
     }
 
     @PostMapping
+    @CrossOrigin(origins = "*")
     public ResponseEntity<ResponseDTO> handleImageUpload(@RequestParam("file") MultipartFile file) {
         if (file.isEmpty()) {
             return new ResponseEntity<>(new ResponseDTO(400, "file empty"), HttpStatus.BAD_REQUEST);
