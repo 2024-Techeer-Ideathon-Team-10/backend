@@ -1,16 +1,20 @@
 package com.example.techeerbackend.Service;
 
 import com.example.techeerbackend.DTO.ResponseDTO;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.springframework.stereotype.Service;
 import okhttp3.*;
 import org.json.JSONObject;
-
 import java.io.IOException;
+import java.time.Duration;
+
 @Service
 public class MainService {
     public ResponseDTO RequestChatGpt() throws JSONException {
-            OkHttpClient client = new OkHttpClient();
+            OkHttpClient.Builder builder = new OkHttpClient.Builder();
+            builder.readTimeout(Duration.ofSeconds(60));
+            OkHttpClient client = builder.build();
             String apiKey = System.getenv("OPENAI_API_KEY");
             JSONObject messageContent = new JSONObject();
             messageContent.put("type", "text");
@@ -21,17 +25,21 @@ public class MainService {
             JSONObject imageContent = new JSONObject();
             imageContent.put("type", "image_url");
             JSONObject imageUrl = new JSONObject();
-            imageUrl.put("url", "http://"); //todo: 주소 확정되면 넣을것.
+            imageUrl.put("url", "https://i.postimg.cc/3wZ7H129/2024-05-31-10-09-26.png"); //todo: 주소 확정되면 넣을것.
             imageContent.put("image_url", imageUrl);
-
             JSONObject userMessage = new JSONObject();
             userMessage.put("role", "user");
-            userMessage.put("content", new JSONObject[]{imageContent,messageContent,juseokContent});
-
+            JSONArray userMessageArray = new JSONArray();
+            userMessageArray.put(imageContent);
+            userMessageArray.put(messageContent);
+            userMessageArray.put(juseokContent);
+            userMessage.put("content", userMessageArray);
+            JSONArray array = new JSONArray();
+            array.put(userMessage);
             JSONObject requestBody = new JSONObject();
             requestBody.put("model", "gpt-4o");
-            requestBody.put("messages", new JSONObject[]{userMessage});
-            requestBody.put("max_tokens", 300);
+            requestBody.put("messages", array);
+            requestBody.put("max_tokens", 1000);
 
             RequestBody body = RequestBody.create(
                     MediaType.parse("application/json; charset=utf-8"),
