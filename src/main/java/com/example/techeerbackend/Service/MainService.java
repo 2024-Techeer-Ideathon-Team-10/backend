@@ -11,6 +11,7 @@ import okhttp3.*;
 import org.json.JSONObject;
 import java.io.IOException;
 import java.time.Duration;
+import java.util.Iterator;
 import java.util.List;
 
 @Service
@@ -74,10 +75,17 @@ public class MainService {
 
                 assert response.body() != null;
                 String result = new JSONObject(r).toString();
-
+                //String answer = new JSONObject(r).getJSONObject("정답도출").toString();
+                String answer = "";
+                for (Iterator it = new JSONObject(r).getJSONObject("정답도출").keys(); it.hasNext(); ) {
+                    String n = (String) it.next();
+                    String str = new JSONObject(r).getJSONObject("정답도출").get(n).toString();
+                    answer += str+"\n";
+                }
                 Question question = new Question();
                 question.setBase64Image(base64);
                 question.setSolution(result);
+                question.setAnswer(answer);
                 repository.save(question);
 
                 return new ResponseDTO(200, result);

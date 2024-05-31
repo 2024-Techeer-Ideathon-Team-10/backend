@@ -4,6 +4,7 @@ import com.example.techeerbackend.DTO.ResponseDTO;
 import com.example.techeerbackend.Entity.Question;
 import com.example.techeerbackend.Service.MainService;
 import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,12 +32,10 @@ public class MainController {
         if (file.isEmpty()) {
             return new ResponseEntity<>(new ResponseDTO(400, "file empty"), HttpStatus.BAD_REQUEST);
         }
-
         try {
             String base64Image = Base64.getEncoder().encodeToString(file.getBytes());
 
             ResponseDTO responseDTO = service.RequestChatGpt(base64Image);
-
             return new ResponseEntity<>(responseDTO, HttpStatus.OK);
         } catch (JSONException | IOException e) {
             throw new RuntimeException(e);

@@ -15,10 +15,11 @@ import java.net.URL;
 import java.time.Duration;
 import java.io.IOException;
 import java.util.Base64;
+import java.util.Iterator;
 
 public class TestChatGpt {
     public static void main(String[] args) throws JSONException, IOException {
-        BufferedImage image = ImageIO.read(new URL("https://i.postimg.cc/NFstN489/2024-05-31-9-47-11.png"));
+        BufferedImage image = ImageIO.read(new URL("https://i.postimg.cc/ydyXRwmZ/a.png"));
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         ImageIO.write(image,"png",os);
         String base64 = "data:image/png;base64,"+Base64.getEncoder().encodeToString(os.toByteArray());
@@ -72,6 +73,13 @@ public class TestChatGpt {
             r = r.replace("`","");
             r = r.replace("json","");
             System.out.println(new JSONObject(r).toString());
+            String answer = "";
+            for (Iterator it = new JSONObject(r).getJSONObject("정답도출").keys(); it.hasNext(); ) {
+                String n = (String) it.next();
+                String str = new JSONObject(r).getJSONObject("정답도출").get(n).toString();
+                answer += str+"\n";
+            }
+            System.out.println(answer);
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }
