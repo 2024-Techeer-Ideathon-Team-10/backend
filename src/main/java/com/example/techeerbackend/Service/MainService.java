@@ -11,7 +11,7 @@ import java.time.Duration;
 
 @Service
 public class MainService {
-    public ResponseDTO RequestChatGpt() throws JSONException {
+    public ResponseDTO RequestChatGpt(String base64) throws JSONException {
             OkHttpClient.Builder builder = new OkHttpClient.Builder();
             builder.readTimeout(Duration.ofSeconds(60));
             OkHttpClient client = builder.build();
@@ -25,7 +25,7 @@ public class MainService {
             JSONObject imageContent = new JSONObject();
             imageContent.put("type", "image_url");
             JSONObject imageUrl = new JSONObject();
-            imageUrl.put("url", "https://i.postimg.cc/3wZ7H129/2024-05-31-10-09-26.png"); //todo: 주소 확정되면 넣을것.
+            imageUrl.put("url", "data:image/png;base64,"+base64); //todo: 주소 확정되면 넣을것.
             imageContent.put("image_url", imageUrl);
             JSONObject userMessage = new JSONObject();
             userMessage.put("role", "user");

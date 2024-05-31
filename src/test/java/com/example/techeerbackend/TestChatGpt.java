@@ -6,11 +6,22 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.time.Duration;
 import java.io.IOException;
+import java.util.Base64;
 
 public class TestChatGpt {
-    public static void main(String[] args) throws JSONException {
+    public static void main(String[] args) throws JSONException, IOException {
+        BufferedImage image = ImageIO.read(new URL("https://i.postimg.cc/MzCGVrHk/2024-05-31-10-09-26.png"));
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
+        ImageIO.write(image,"png",os);
+        String base64 = "data:image/png;base64,"+Base64.getEncoder().encodeToString(os.toByteArray());
+        //System.out.println(base64);
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
         builder.readTimeout(Duration.ofSeconds(60));
         OkHttpClient client = builder.build();
@@ -24,9 +35,8 @@ public class TestChatGpt {
         JSONObject imageContent = new JSONObject();
         imageContent.put("type", "image_url");
         JSONObject imageUrl = new JSONObject();
-        imageUrl.put("url", "https://i.postimg.cc/3wZ7H129/2024-05-31-10-09-26.png"); //todo: 주소 확정되면 넣을것.
+        imageUrl.put("url", "data:image/png;base64,"+base64); //todo: 주소 확정되면 넣을것.
         imageContent.put("image_url", imageUrl);
-
         JSONObject userMessage = new JSONObject();
         userMessage.put("role", "user");
         JSONArray userMessageArray = new JSONArray();
